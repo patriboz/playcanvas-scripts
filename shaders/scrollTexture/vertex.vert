@@ -8,6 +8,6 @@ varying vec2 vUv0;
 
 void main(void)
 {
-    vUv0 = aUv0;
-    gl_Position = matrix_viewProjection * matrix_model * vec4(aPosition, 1.0);
+  vUv0 = aUv0;
+  gl_Position = matrix_viewProjection * matrix_model * vec4(aPosition, 1.0);
 }

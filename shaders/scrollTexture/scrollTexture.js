@@ -8,30 +8,30 @@ var ScrollTexture = pc.createScript('scrollTexture');
 
 // Vertex shader asset
 ScrollTexture.attributes.add('vs', {
-    type: 'asset',
-    assetType: 'shader',
-    title: 'Vertex Shader'
+  type: 'asset',
+  assetType: 'shader',
+  title: 'Vertex Shader'
 });
 
 // Fragment shader asset
 ScrollTexture.attributes.add('fs', {
-    type: 'asset',
-    assetType: 'shader',
-    title: 'Fragment Shader'
+  type: 'asset',
+  assetType: 'shader',
+  title: 'Fragment Shader'
 });
 
 // Texture used on the emissive channel
 ScrollTexture.attributes.add('emissiveMap', {
-    type: 'asset',
-    assetType: 'texture',
-    title: 'Emissive Map'
+  type: 'asset',
+  assetType: 'texture',
+  title: 'Emissive Map'
 });
 
 // Texture used on the opacity channel
 ScrollTexture.attributes.add('opacityMap', {
-    type: 'asset',
-    assetType: 'texture',
-    title: 'Opacity Map'
+  type: 'asset',
+  assetType: 'texture',
+  title: 'Opacity Map'
 });
 
 // Start value. Range: 0 - 1
@@ -58,14 +58,14 @@ ScrollTexture.attributes.add('speed', {
 // Scrolltexture will start once this event is fired on the app,
 // like so: this.app.fire(eventStart)
 ScrollTexture.attributes.add('eventStart', {
-    type: 'string',
-    title: 'Event Start'
+  type: 'string',
+  title: 'Event Start'
 });
 
 // Stop event
 ScrollTexture.attributes.add('eventStop', {
-    type: 'string',
-    title: 'Event Stop'
+  type: 'string',
+  title: 'Event Stop'
 });
 
 
@@ -83,56 +83,56 @@ ScrollTexture.prototype.initialize = function() {
   
   this.progress = this.progressStart;
     
-    var app = this.app;
-    var model = this.entity.model.model;
-    var gd = app.graphicsDevice;
+  var app = this.app;
+  var model = this.entity.model.model;
+  var gd = app.graphicsDevice;
 
-    var emissiveTexture = this.emissiveMap.resource;
-    var opacityTexture = this.opacityMap.resource;
+  var emissiveTexture = this.emissiveMap.resource;
+  var opacityTexture = this.opacityMap.resource;
 
-    var vertexShader = this.vs.resource;
-    var fragmentShader = "precision " + gd.precision + " float;\n";
-    fragmentShader = fragmentShader + this.fs.resource;
+  var vertexShader = this.vs.resource;
+  var fragmentShader = "precision " + gd.precision + " float;\n";
+  fragmentShader = fragmentShader + this.fs.resource;
 
-    // A shader definition used to create a new shader.
-    var shaderDefinition = {
-        attributes: {
-            aPosition: pc.SEMANTIC_POSITION,
-            aUv0: pc.SEMANTIC_TEXCOORD0
-        },
-        vshader: vertexShader,
-        fshader: fragmentShader
-    };
+  // A shader definition used to create a new shader.
+  var shaderDefinition = {
+    attributes: {
+      aPosition: pc.SEMANTIC_POSITION,
+      aUv0: pc.SEMANTIC_TEXCOORD0
+    },
+    vshader: vertexShader,
+    fshader: fragmentShader
+  };
 
-    // Create the shader from the definition
-    this.shader = new pc.Shader(gd, shaderDefinition);
+  // Create the shader from the definition
+  this.shader = new pc.Shader(gd, shaderDefinition);
 
-    // Create a new material and set the shader
-    this.material = new pc.Material();
-    this.material.alphaWrite = true;
-    this.material.blendType = pc.BLEND_NORMAL;
-    this.material.shader = this.shader;
+  // Create a new material and set the shader
+  this.material = new pc.Material();
+  this.material.alphaWrite = true;
+  this.material.blendType = pc.BLEND_NORMAL;
+  this.material.shader = this.shader;
 
-    // Set the initial progress parameter
-    this.material.setParameter('uProgress', this.progress);
+  // Set the initial progress parameter
+  this.material.setParameter('uProgress', this.progress);
 
-    
-    // Set textures
-    this.material.setParameter('uEmissiveMap', emissiveTexture);
-    this.material.setParameter('uOpacityMap', opacityTexture);
+  
+  // Set textures
+  this.material.setParameter('uEmissiveMap', emissiveTexture);
+  this.material.setParameter('uOpacityMap', opacityTexture);
 
 
-    // This will replace the material on the model with our new material
-    // Please adjust mesh instance for correct reference
-    model.meshInstances[0].material = this.material;
-    
-    this.app.on(this.eventStart, this.start, this);
-    this.app.on(this.eventStop, this.stop, this);
+  // This will replace the material on the model with our new material
+  // Please adjust mesh instance for correct reference
+  model.meshInstances[0].material = this.material;
+  
+  this.app.on(this.eventStart, this.start, this);
+  this.app.on(this.eventStop, this.stop, this);
 
-    this.on('destroy', function() {
-      this.app.off(this.eventStart, this.start, this);
-      this.app.off(this.eventStop, this.stop, this);
-    }, this);
+  this.on('destroy', function() {
+    this.app.off(this.eventStart, this.start, this);
+    this.app.off(this.eventStop, this.stop, this);
+  }, this);
 };
 
 ScrollTexture.prototype.start = function() {
@@ -163,13 +163,12 @@ ScrollTexture.prototype.hide = function() {
 
 // update code called every frame
 ScrollTexture.prototype.update = function(dt) {
-    if(this.active) {
-        if(this.progress > 1) {
-            this.active = false;
-            this.progress = this.progressStart;
-        }
-        this.material.setParameter('uProgress', this.progress);
-        this.progress += (dt * this.speed);
+  if(this.active) {
+    if(this.progress > 1) {
+      this.active = false;
+      this.progress = this.progressStart;
     }
-    
+    this.material.setParameter('uProgress', this.progress);
+    this.progress += (dt * this.speed);
+  }
 };
